@@ -1,29 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TennisApp.Data;
+using TennisApp.Interfaces;
 using TennisApp.Models;
 
 namespace TennisApp.Controllers;
 
 public class GameController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IGameRepository _gameRepository;
 
-    public GameController(ApplicationDbContext context)
+    public GameController(IGameRepository gameRepository)
     {
-        _context = context;
+        _gameRepository = gameRepository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var games = _context.Games.ToList();
+        var games = await _gameRepository.GetAll();
 
         return View(games);
     }
 
-    public IActionResult Detail(int id)
+    public async Task<IActionResult> Detail(int id)
     {
-        Game game = _context.Games.Include(c => c.Address).FirstOrDefault(c => c.Id == id);
+        Game game = await _gameRepository.GetByIdAsync(id);
 
         return View(game);
     }
