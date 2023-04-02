@@ -28,4 +28,20 @@ public class GameController : Controller
 
         return View(game);
     }
+
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(Game game)
+    {
+        if(ModelState.IsValid == false)
+        {
+            return View(game);
+        }
+        _gameRepository.Add(game);
+        return RedirectToAction("Index");
+    }
 }
